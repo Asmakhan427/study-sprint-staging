@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Sprint</title>
+  <style>
+    :root {
+      --bg: #0d1021;
+      --panel: #161a34;
+      --panel-2: #1c2142;
+      --border: #2b3160;
+      --text: #f3f4fb;
+      --muted: #9aa1c4;
+      --accent: #8b7bff;
+      --accent-2: #ff8a5c;
+      --accent-dark: #6f5ce6;
+      --success: #2fd6a7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background:
+        radial-gradient(760px circle at 15% -10%, rgba(139, 123, 255, 0.25), transparent 60%),
+        radial-gradient(640px circle at 100% 0%, rgba(255, 138, 92, 0.16), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      font-weight: 700;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+    }
+    .brand span {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    #env-badge {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--panel);
+      text-transform: capitalize;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 56px 24px 80px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 40px;
+      margin: 0 0 8px;
+    }
+    .tagline {
+      color: var(--muted);
+      font-size: 16px;
+      margin: 0 0 40px;
+    }
+    .timer-card {
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 24px;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 60px -30px rgba(139, 123, 255, 0.45);
+    }
+    #timer-display {
+      font-size: 72px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--text), var(--accent) 120%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    #timer-status {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    button {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+    button:hover { border-color: var(--accent); transform: translateY(-1px); }
+    #start-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      color: #0d1021;
+    }
+    #start-btn:hover {
+      background: linear-gradient(135deg, var(--accent-dark), var(--accent-2));
+      box-shadow: 0 8px 24px -8px rgba(139, 123, 255, 0.6);
+    }
+    .sprint-count {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+    .sprint-count strong { color: var(--success); }
+    .how-it-works {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      text-align: left;
+    }
+    .step {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.15s ease;
+    }
+    .step:hover { border-color: var(--accent); }
+    .step .num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0d1021;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .step h3 { margin: 0 0 6px; font-size: 15px; }
+    .step p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+    @media (max-width: 560px) {
+      .how-it-works { grid-template-columns: 1fr; }
+      #timer-display { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Study<span>Sprint</span></div>
+    <span id="env-badge">Running in: {{ENV}}</span>
+  </header>
+
+  <main>
+    <h1>Study Sprint Timer</h1>
+    <p class="tagline">Focused 25-minute sprints with built-in breaks. No sign-up, no distractions.</p>
+
+    <div class="timer-card">
+      <div id="timer-display">25:00</div>
+      <div id="timer-status">Ready to focus</div>
+      <div class="controls">
+        <button id="start-btn">Start Sprint</button>
+        <button id="pause-btn">Pause</button>
+        <button id="reset-btn">Reset</button>
+      </div>
+      <div class="sprint-count">Sprints completed today: <strong id="sprint-count">0</strong></div>
+    </div>
+
+    <div class="how-it-works">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Start a sprint</h3>
+        <p>Commit to 25 focused minutes on a single task. No multitasking.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Take a break</h3>
+        <p>When the timer ends, step away for 5 minutes before the next sprint.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Track progress</h3>
+        <p>Every completed sprint counts toward your daily focus streak.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>Study Sprint &mdash; a small focus timer, deployed from a single Express server.</footer>
+
+  <script>
+    (function () {
+      const SPRINT_SECONDS = 25 * 60;
+      const BREAK_SECONDS = 5 * 60;
+
+      const display = document.getElementById('timer-display');
+      const status = document.getElementById('timer-status');
+      const startBtn = document.getElementById('start-btn');
+      const pauseBtn = document.getElementById('pause-btn');
+      const resetBtn = document.getElementById('reset-btn');
+      const sprintCountEl = document.getElementById('sprint-count');
+
+      let secondsLeft = SPRINT_SECONDS;
+      let mode = 'sprint'; // 'sprint' | 'break'
+      let intervalId = null;
+      let sprintCount = 0;
+
+      function formatTime(totalSeconds) {
+        const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const s = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
+        return m + ':' + s;
+      }
+
+      function render() {
+        display.textContent = formatTime(secondsLeft);
+        status.textContent = intervalId
+          ? (mode === 'sprint' ? 'Focusing…' : 'On break…')
+          : 'Ready to focus';
+        sprintCountEl.textContent = sprintCount;
+      }
+
+      function tick() {
+        secondsLeft -= 1;
+        if (secondsLeft <= 0) {
+          if (mode === 'sprint') {
+            sprintCount += 1;
+            mode = 'break';
+            secondsLeft = BREAK_SECONDS;
+          } else {
+            mode = 'sprint';
+            secondsLeft = SPRINT_SECONDS;
+          }
+        }
+        render();
+      }
+
+      startBtn.addEventListener('click', function () {
+        if (intervalId) return;
+        intervalId = setInterval(tick, 1000);
+        render();
+      });
+
+      pauseBtn.addEventListener('click', function () {
+        clearInterval(intervalId);
+        intervalId = null;
+        render();
+      });
+
+      resetBtn.addEventListener('click', function () {
+        clearInterval(intervalId);
+        intervalId = null;
+        mode = 'sprint';
+        secondsLeft = SPRINT_SECONDS;
+        render();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
