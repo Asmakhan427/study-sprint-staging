@@ -9,6 +9,10 @@ A small Express app demonstrating how to deploy the same codebase to separate **
 - **`package.json`** defines separate scripts for building/starting each environment.
 - **`deploy_staging.sh`** automates install → build → start → health check, mirroring a basic CI/CD pipeline.
 
+## Output
+<img width="1891" height="867" alt="image" src="https://github.com/user-attachments/assets/f018be8d-0d88-4cd4-a03d-aa02a43122ea" />
+
+
 ## Getting started
 
 ```bash
