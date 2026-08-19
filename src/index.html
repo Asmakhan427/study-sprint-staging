@@ -273,53 +273,33 @@ let sessionHistory = [];
 
   sprintCountEl.textContent = sprintCount;
 
-  if (sessionHistory.length === 0) {
-    sessionHistoryList.innerHTML = '<li>No completed sprints yet.</li>';
-  } else {
-    sessionHistoryList.innerHTML = sessionHistory
-      .map(session => `<li> ${session}</li>`)
-      .join('');
-  }
-}
-
-      function tick() {
-        secondsLeft -= 1;
-        if (secondsLeft <= 0) {
-          if (mode === 'sprint') {
-  sprintCount += 1;
-
-  sessionHistory.unshift('25-minute sprint completed');
-
-  mode = 'break';
-  secondsLeft = BREAK_SECONDS;
+if (sessionHistory.length === 0) {
+  sessionHistoryList.innerHTML = '<li>No completed sprints yet.</li>';
 } else {
-  sessionHistory.unshift('5-minute break completed');
-  mode = 'sprint';
-  secondsLeft = SPRINT_SECONDS;
+  sessionHistoryList.innerHTML = sessionHistory
+    .map(session => `<li> ${session}</li>`)
+    .join('');
 }
-        }
-        render();
-      }
+}
 
-      startBtn.addEventListener('click', function () {
-        if (intervalId) return;
-        intervalId = setInterval(tick, 1000);
-        render();
-      });
-
-      pauseBtn.addEventListener('click', function () {
-        clearInterval(intervalId);
-        intervalId = null;
-        render();
-      });
-
-      resetBtn.addEventListener('click', function () {
-        clearInterval(intervalId);
-        intervalId = null;
-        mode = 'sprint';
-        secondsLeft = SPRINT_SECONDS;
-        render();
-      });
+function tick() {
+  secondsLeft -= 1;
+  if (secondsLeft <= 0) {
+    if (mode === 'sprint') {
+      sprintCount += 1;
+      sessionHistory.unshift('25-minute sprint completed');
+      sessionHistory = sessionHistory.slice(0, MAX_HISTORY_ITEMS);
+      mode = 'break';
+      secondsLeft = BREAK_SECONDS;
+    } else {
+      sessionHistory.unshift('5-minute break completed');
+      sessionHistory = sessionHistory.slice(0, MAX_HISTORY_ITEMS);
+      mode = 'sprint';
+      secondsLeft = SPRINT_SECONDS;
+    }
+  }
+  render();
+}
 
       render();
     })();
