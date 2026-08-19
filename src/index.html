@@ -129,6 +129,27 @@
       margin-top: 20px;
     }
     .sprint-count strong { color: var(--success); }
+    .session-history {
+  margin-top: 24px;
+  text-align: left;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.session-history h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.session-history ul {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
     .how-it-works {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -191,7 +212,12 @@
       </div>
       <div class="sprint-count">Sprints completed today: <strong id="sprint-count">0</strong></div>
     </div>
-
+<div class="session-history">
+  <h3>Recent Sessions</h3>
+  <ul id="session-history-list">
+    <li>No completed sprints yet.</li>
+  </ul>
+</div>
     <div class="how-it-works">
       <div class="step">
         <div class="num">1</div>
@@ -224,6 +250,8 @@
       const pauseBtn = document.getElementById('pause-btn');
       const resetBtn = document.getElementById('reset-btn');
       const sprintCountEl = document.getElementById('sprint-count');
+const sessionHistoryList = document.getElementById('session-history-list');
+let sessionHistory = [];
 
       let secondsLeft = SPRINT_SECONDS;
       let mode = 'sprint'; // 'sprint' | 'break'
@@ -236,25 +264,39 @@
         return m + ':' + s;
       }
 
-      function render() {
-        display.textContent = formatTime(secondsLeft);
-        status.textContent = intervalId
-          ? (mode === 'sprint' ? 'Focusing…' : 'On break…')
-          : 'Ready to focus';
-        sprintCountEl.textContent = sprintCount;
-      }
+     function render() {
+  display.textContent = formatTime(secondsLeft);
+
+  status.textContent = intervalId
+    ? (mode === 'sprint' ? 'Focusing…' : 'On break…')
+    : 'Ready to focus';
+
+  sprintCountEl.textContent = sprintCount;
+
+  if (sessionHistory.length === 0) {
+    sessionHistoryList.innerHTML = '<li>No completed sprints yet.</li>';
+  } else {
+    sessionHistoryList.innerHTML = sessionHistory
+      .map(session => `<li> ${session}</li>`)
+      .join('');
+  }
+}
 
       function tick() {
         secondsLeft -= 1;
         if (secondsLeft <= 0) {
           if (mode === 'sprint') {
-            sprintCount += 1;
-            mode = 'break';
-            secondsLeft = BREAK_SECONDS;
-          } else {
-            mode = 'sprint';
-            secondsLeft = SPRINT_SECONDS;
-          }
+  sprintCount += 1;
+
+  sessionHistory.unshift('25-minute sprint completed');
+
+  mode = 'break';
+  secondsLeft = BREAK_SECONDS;
+} else {
+  sessionHistory.unshift('5-minute break completed');
+  mode = 'sprint';
+  secondsLeft = SPRINT_SECONDS;
+}
         }
         render();
       }
